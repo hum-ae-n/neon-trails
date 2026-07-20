@@ -1,4 +1,12 @@
-# Neon Trails
+<div align="center">
+
+```
+    _   _ _____ ___  _   _   _____ ____      _    ___ _     ____
+   | \ | | ____/ _ \| \ | | |_   _|  _ \    / \  |_ _| |   / ___|
+   |  \| |  _|| | | |  \| |   | | | |_) |  / _ \  | || |   \___ \
+   | |\  | |__| |_| | |\  |   | | |  _ <  / ___ \ | || |___ ___) |
+   |_| \_|_____\___/|_| \_|   |_| |_| \_\/_/   \_\___|_____|____/
+```
 
 ```
                          .::       ...::.
@@ -34,17 +42,28 @@
                   .:--:..           .*#####*+-:.
                        .:....        -=--:.
 ```
-*the Kaipability mark, rendered as a density field — same glow-falloff logic the shader runs, character by character.*
-*shape `0` — the engine's default lemniscate, two SDF loops, glow falloff `.` → `@`*
 
-**A living light installation for your website.** SDF fragment-shader light
-streams, rendered per-pixel so they stay razor-smooth at any resolution — a
-self-running WebGL wallpaper that reacts to light and dark mode with opposite
-optics: additive glow on dark, subtractive ink on light.
+*the Kaipability mark, drawn as a density field — the same glow-falloff logic
+the shader runs, one character at a time.*
 
-Zero dependencies. No build step. Drop it behind your content and it runs.
+### A living light installation for your website.
 
-**▶ See it live:** https://www.kaipability.com/x/neon-hero-7q2m/
+SDF fragment-shader light streams, rendered per-pixel so they stay razor-smooth
+at any resolution — a self-running WebGL wallpaper that reacts to light and
+dark mode with opposite optics: additive glow on dark, subtractive ink on light.
+
+![Zero dependencies](https://img.shields.io/badge/dependencies-zero-9146ff?style=flat-square)
+![No build step](https://img.shields.io/badge/build%20step-none-00c2ff?style=flat-square)
+![WebGL 1.0](https://img.shields.io/badge/WebGL-1.0-ff3d68?style=flat-square)
+![Light%2FDark aware](https://img.shields.io/badge/theme-light%20%2F%20dark-2ee6a6?style=flat-square)
+![License](https://img.shields.io/badge/license-proprietary-lightgrey?style=flat-square)
+
+## ▶ [**See it live**](https://www.kaipability.com/x/neon-hero-7q2m/)
+
+Drop it behind your content. No canvas libraries, no bundler, no dependency
+tree to audit — just a `<script>` tag and it runs.
+
+</div>
 
 ---
 
