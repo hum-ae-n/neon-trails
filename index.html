@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Trails</title>
+<link rel="icon" href="favicon.png" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100%;height:100%;overflow:hidden;background:#050508;transition:background .6s ease}
+  html[data-theme="light"] body{background:#f6f5f2}
+  /* canvas is a replaced element — needs explicit width/height to fill,
+     inset:0 alone leaves it at its intrinsic 300x150 */
+  #neonCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+
+  /* ── overlay: what this is (sits over the animation) ── */
+  .overlay{position:fixed;inset:0;z-index:10;pointer-events:none;
+    display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+    padding:clamp(2rem,7vw,7rem)}
+  .overlay .label{font-family:'JetBrains Mono',monospace;
+    font-size:clamp(.65rem,1vw,.8rem);text-transform:uppercase;letter-spacing:.18em;
+    color:#E63951;margin-bottom:1.1rem;text-shadow:0 2px 20px rgba(0,0,0,.9)}
+  .overlay h1{font-family:'Space Grotesk',sans-serif;font-weight:600;
+    font-size:clamp(2.4rem,6vw,4.75rem);letter-spacing:-.03em;line-height:1.05;
+    color:#e8e4df;text-shadow:0 0 40px rgba(0,0,0,.9),0 0 80px rgba(0,0,0,.6)}
+  html[data-theme="light"] .overlay h1{color:#1c1b22;text-shadow:0 0 40px rgba(255,255,255,.6)}
+  .overlay .accent{width:clamp(60px,8vw,120px);height:3px;background:#E63951;
+    margin:1.4rem 0;box-shadow:0 0 12px rgba(230,57,81,.45)}
+  .overlay p{font-family:'Inter',system-ui,sans-serif;font-weight:300;
+    font-size:clamp(1rem,2vw,1.3rem);max-width:46ch;line-height:1.6;
+    color:#9a9a9a;text-shadow:0 0 30px rgba(0,0,0,.95)}
+  html[data-theme="light"] .overlay p{color:#555;text-shadow:0 0 30px rgba(255,255,255,.8)}
+  .overlay .hint{font-family:'JetBrains Mono',monospace;font-size:.72rem;
+    letter-spacing:.06em;color:#6a6a72;margin-top:1.9rem}
+
+  /* discreet brand corner — favicon link + copyright, nothing else */
+  .brand-corner{position:fixed;left:0;right:0;bottom:0;z-index:20;
+    display:flex;align-items:center;justify-content:center;gap:.6rem;
+    padding:1rem;font-family:system-ui,sans-serif;font-size:.72rem;
+    color:#8a8a90;pointer-events:none}
+  html[data-theme="light"] .brand-corner{color:#6a6a72}
+  .brand-corner a{display:inline-flex;align-items:center;gap:.45rem;
+    color:inherit;text-decoration:none;pointer-events:auto;transition:color .2s}
+  .brand-corner a:hover{color:#c8c8d0}
+  html[data-theme="light"] .brand-corner a:hover{color:#1c1b22}
+  .brand-corner img{width:18px;height:18px;display:block;border-radius:3px}
+
+  /* minimal theme toggle */
+  #themeSwitch{position:fixed;top:1.1rem;left:1.1rem;z-index:400;
+    width:34px;height:34px;border-radius:6px;cursor:pointer;
+    background:rgba(20,20,30,.6);color:#e8e4df;
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    font-size:.95rem;line-height:1;transition:background .3s,color .3s,border-color .3s}
+  html[data-theme="light"] #themeSwitch{background:rgba(255,255,255,.65);
+    color:#1c1b22;border-color:rgba(0,0,0,.12)}
+</style>
+</head>
+<body>
+<canvas id="neonCanvas"></canvas>
+
+<button id="themeSwitch" aria-label="Toggle theme" title="Toggle light/dark (T)">&#9680;</button>
+
+<div class="overlay">
+  <span class="label">Prompted, not programmed</span>
+  <h1>Neon Trails</h1>
+  <div class="accent"></div>
+  <p>Every line — the shader, the physics, the palette — was specified in plain
+     language and built by an AI. The code copies in a click. Knowing what to
+     ask for doesn't.</p>
+  <span class="hint">Move the pointer to steer &middot; press P to tune the effect</span>
+</div>
+
+<div class="brand-corner">
+  <a href="https://kaipability.com" target="_blank" rel="noopener">
+    <img src="favicon.png" alt="">© Kaipability Ltd
+  </a>
+</div>
+
+<script src="neon-trails.js"></script>
+<script>
+  /* Init the engine, then load the tuning panel so it captures live values.
+     Press P for the panel. Remove neon-panel.js in production if not needed. */
+  (function(){
+    var c = document.getElementById('neonCanvas');
+    NeonTrails.init(c);
+    var ps = document.createElement('script');
+    ps.src = 'neon-panel.js';
+    document.body.appendChild(ps);
+  })();
+
+  /* Theme toggle wired to the engine (glow on dark, ink on light). */
+  (function(){
+    var sw = document.getElementById('themeSwitch');
+    function apply(t){
+      document.documentElement.setAttribute('data-theme', t);
+      if (window.NEON_setTheme) window.NEON_setTheme(t);
+      sw.innerHTML = t === 'light' ? '&#9681;' : '&#9680;';
+    }
+    sw.addEventListener('click', function(e){
+      e.stopPropagation();
+      apply(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 't' || e.key === 'T')
+        apply(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
+</body>
+</html>
